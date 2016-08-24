@@ -1,5 +1,31 @@
 import numpy as np
 import pylab as pl
+import socket
+import netifaces as ni
+
+from socketserver import BaseRequestHandler, TCPServer
+
+class EchoHandler(BaseRequestHandler):
+    def handle(self):
+        print('Got connection from', self.client_address)
+        while True:
+
+            msg = self.request.recv(8192)
+            if not msg:
+                break
+            self.request.send('python'.encode())
+
+
+s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+s.connect(("gmail.com",80))
+print('server ip:'+s.getsockname()[0])
+s.close()
+
+serv = TCPServer(('', 0), EchoHandler)
+
+
+
+# serv.serve_forever()
 
 channel1,channel2 = np.loadtxt('3mins-tonetest-april-26.txt', skiprows=0, unpack=True)
 
